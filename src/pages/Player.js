@@ -141,7 +141,7 @@ export default class Player extends Lightning.Component {
         let ratio = playTime.currentTime / playTime.duration;
         let barW = Math.min(Math.round(1500 * ratio), 1500);
 
-        let playHead = `${Math.round(playTime.currentTime /3600)} : ${Math.round(playTime.currentTime /60)} : ${Math.round(playTime.currentTime)}`;
+        let playHead = `${Math.round(playTime.currentTime /3600)} : ${Math.round(playTime.currentTime /60)} : ${Math.round(playTime.currentTime % 60)}`;
 
         this.tag('PlayTime').patch({
             text: {
@@ -150,7 +150,7 @@ export default class Player extends Lightning.Component {
         })
         let h = playTime.duration/3600;
         let m = playTime.duration/60;
-        let s = playTime.duration;
+        let s = playTime.duration % 60;
         let hhmmss = `${Math.round(h)} : ${Math.round(m)} : ${Math.round(s)}`;
         this.tag('PlayDuration').patch({
             text: {
