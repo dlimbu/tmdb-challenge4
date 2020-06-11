@@ -15,6 +15,48 @@ export default class Player extends Lightning.Component {
              *   - add duration label
              *   - add text label for currentTime
              */
+            MediaPlayer: {
+                type: MediaPlayer
+            },
+            color: 0xff00ff00,
+            rect: true,
+            Banner: {
+                alpha: 0,
+                GradientRight: {
+                    rect: true,
+                    y: 800,
+                    w: 1920,
+                    h: 300,
+                    colorTop:0xfffffff,
+                    colorBottom: 0xff000000,    
+                },
+                Controls: {
+                    x: 100,
+                    y: 1000,
+                    rect: true,
+                    PlayPause: {
+                        y: -10,
+                        src:  Utils.asset('/mediaPlayer/play.png'),
+                    },
+                    Skip: {
+                        x: 50,
+                        y: -10,
+                        src: Utils.asset('/mediaPlayer/skip.png'),
+                    },
+                    ProgressBar: {
+                        rect: true,
+                        x: 120,
+                        h: 10,
+                        w: 1500,
+                        Bar: {
+                            rect: true,
+                            color: 0xff0384fc,
+                            h: 10,
+                            w: 0,
+                        }
+                    }
+                }
+            }
         };
     }
 
@@ -25,6 +67,13 @@ export default class Player extends Lightning.Component {
          */
     }
 
+    _firstActive() {
+        this.mediaPlayer = this.tag('MediaPlayer');
+        this.mediaPlayer.updateSettings({consumer: this});
+        this.mediaPlayer.open(this._item.streamUrl);
+        this.mediaPlayer.loop = true;
+        this._setState('Playing');
+    }
     /**
      *@todo:
      * add focus and unfocus handlers
@@ -32,6 +81,14 @@ export default class Player extends Lightning.Component {
      * unfocus => hide controls
      */
 
+
+     _focus() {
+        this.tag('Banner').setSmooth('alpha', 1, {duration: 0.3});
+     }
+
+     _unfocus() {
+        this.tag('Banner').setSmooth('alpha', 0, {duration: 0.5});
+     }
 
     /**
      * @todo:
@@ -41,11 +98,12 @@ export default class Player extends Lightning.Component {
      * @param loop
      */
     play(src, loop) {
-
+        console.log('Play called ')
+        this.mediaPlayer.play();
     }
 
     stop() {
-
+        console.log('Endedd')
     }
 
     set item(v){
@@ -56,8 +114,34 @@ export default class Player extends Lightning.Component {
      * @todo:
      * - add _handleEnter() method and make sure the video Pauses
      */
-    _handleEnter(){
+    _handleEnter() {
+       
+    }
 
+    _handleExit() {
+        this.tag('Banner').setSmooth('alpha', 0, {duration: 0.5});
+    }
+
+    $mediaplayerLoadedData() {
+
+    }
+
+    $mediaplayerProgress(playTime) {
+        // currentTime: 5.213712, duration: 10}
+        let ratio = playTime.currentTime / playTime.duration;
+        let barW = Math.min(Math.round(1500 * ratio), 1500);
+        this.tag('Bar').setSmooth('w', barW, {duration: 0.01});
+    }
+
+    // this will be invoked when the video starts playing
+    $mediaplayerPlay() {
+        this.emit('Player:Playing');
+        this.application.emit('playback:started');
+        console.log('playing calledback')
+    }
+
+    $mediaPlayerError() {
+        console.log('error ')
     }
 
     /**
@@ -66,9 +150,12 @@ export default class Player extends Lightning.Component {
      * - Add this Component in a Paused state
      */
     $mediaplayerPause() {
-
+        console.log('pause called');
     }
 
+    $mediaplayerEnded() {
+        console.log('ended called');
+    }
 
     static _states(){
         return [
@@ -81,10 +168,21 @@ export default class Player extends Lightning.Component {
              */
             class Paused extends this{
                 $enter(){
+                    this.tag("PlayPause").src = Utils.asset("mediaplayer/pause.png");
+                }
+                _handleEnter(){
+                    this.tag("MediaPlayer").playPause();
+                    this._setState('Playing');
+                }
+            },
+
+            class Playing extends this{
+                $enter(){
                     this.tag("PlayPause").src = Utils.asset("mediaplayer/play.png");
                 }
                 _handleEnter(){
-                    this.tag("MediaPlayer").doPlay();
+                    this.tag("MediaPlayer").playPause();
+                    this._setState('Paused');
                 }
             }
         ]

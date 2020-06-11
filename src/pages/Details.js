@@ -38,12 +38,12 @@ export default class Details extends Lightning.Component{
                         type: Button, label: "Watch Trailer"
                     }
                 }
-            }
+        }
         };
     }
 
     _active() {
-        this.application.emit("setItem", this._details);
+        this.application.emit("showBg", {item: this._details});
 
         this.patch({
             Header: {
@@ -67,7 +67,6 @@ export default class Details extends Lightning.Component{
     set itemId(v){
         this._itemId = v;
     }
-
 
     set details(v) {
         this._details = v;
@@ -100,6 +99,7 @@ export default class Details extends Lightning.Component{
     }
 
     _handleEnter(){
+        //%%% Play invoked 
         Router.navigate(`details/${this._itemType}/${this._itemId}/play`);
     }
 

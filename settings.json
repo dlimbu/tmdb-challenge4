@@ -14,7 +14,7 @@
     "log": true,
     "path": "./static",
     "showVersion": false,
-    "inspector": false,
+    "inspector": true,
     "gcOnUnload": true,
     "lazyCreate": true,
     "lazyDestroy": true,

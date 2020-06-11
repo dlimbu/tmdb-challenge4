@@ -34,5 +34,25 @@ export default class Background extends Lightning.Component{
             });
 
         });
+
+        this.application.on("showBg", ({item})=> {
+            bg = item.background;
+
+            this.tag("Background").patch({
+                alpha:0, scale:1.2
+            });
+            this.tag("Background").patch({
+                texture: Img(getImgUrl(bg, 1280)).contain(1920, 1080),
+                smooth: {scale: 1, alpha: 1}
+            });
+
+        });
+
+        this.application.on("playback:started", ()=> {
+            this.tag("Background").patch({
+                texture: '',
+                alpha: 0,
+            });
+        });
     }
 }

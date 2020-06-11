@@ -25,6 +25,7 @@ export default class Details {
         this._video = obj._video;
         this._vote_average = obj.vote_average;
         this._vote_count = obj.vote_count;
+        this.streamUrl = obj.streamUrl;
     }
 
     get adult() {
