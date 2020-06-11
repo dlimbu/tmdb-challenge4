@@ -51,7 +51,6 @@ export default class Background extends Lightning.Component{
         this.application.on("playback:started", ()=> {
             this.tag("Background").patch({
                 texture: '',
-                alpha: 0,
             });
         });
     }

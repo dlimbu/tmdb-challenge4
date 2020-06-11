@@ -49,11 +49,21 @@ export default class Player extends Lightning.Component {
                         h: 10,
                         w: 1500,
                         Bar: {
+                            PlayTime: {
+                                y: -40,
+                                text: {text: '', fontSize: 24, fontFace: "SourceSansPro-Regular"}
+                            },
+                            PlayDuration: {
+                                y: -40,
+                                x: 1420,
+                                text: {text: '', fontSize: 24, fontFace: "SourceSansPro-Regular"}
+                            },
                             rect: true,
                             color: 0xff0384fc,
                             h: 10,
                             w: 0,
-                        }
+                        },
+              
                     }
                 }
             }
@@ -130,6 +140,24 @@ export default class Player extends Lightning.Component {
         // currentTime: 5.213712, duration: 10}
         let ratio = playTime.currentTime / playTime.duration;
         let barW = Math.min(Math.round(1500 * ratio), 1500);
+
+        let playHead = `${Math.round(playTime.currentTime /3600)} : ${Math.round(playTime.currentTime /60)} : ${Math.round(playTime.currentTime)}`;
+
+        this.tag('PlayTime').patch({
+            text: {
+                text: playHead,
+            }
+        })
+        let h = playTime.duration/3600;
+        let m = playTime.duration/60;
+        let s = playTime.duration;
+        let hhmmss = `${Math.round(h)} : ${Math.round(m)} : ${Math.round(s)}`;
+        this.tag('PlayDuration').patch({
+            text: {
+                text: hhmmss,
+            }
+        })
+
         this.tag('Bar').setSmooth('w', barW, {duration: 0.01});
     }
 
@@ -138,6 +166,7 @@ export default class Player extends Lightning.Component {
         this.emit('Player:Playing');
         this.application.emit('playback:started');
         console.log('playing calledback')
+        
     }
 
     $mediaPlayerError() {
