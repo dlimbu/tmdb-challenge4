@@ -145,9 +145,9 @@ export default class Player extends Lightning.Component {
         }
 
         let hhmmss = (timeSec) => {
-            let h = Math.round(timeSec/3600);
-            let m = Math.round(timeSec/60);
-            let s = Math.round(timeSec%60);
+            let h = Math.floor(timeSec/3600)%24;
+            let m = Math.floor(timeSec/60)%60;
+            let s = Math.floor(timeSec%60);
     
             if (single(h)) {
                 h = '0' + h;
@@ -175,7 +175,7 @@ export default class Player extends Lightning.Component {
         })
 
         let barW = Math.min(Math.round(1500 * ratio), 1500);
-        this.tag('Bar').setSmooth('w', barW, {duration: 0.01});
+        this.tag('Bar').setSmooth('w', barW, {duration: 0.005});
     }
 
     // this will be invoked when the video starts playing
