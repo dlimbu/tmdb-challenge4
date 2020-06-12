@@ -139,25 +139,42 @@ export default class Player extends Lightning.Component {
     $mediaplayerProgress(playTime) {
         // currentTime: 5.213712, duration: 10}
         let ratio = playTime.currentTime / playTime.duration;
-        let barW = Math.min(Math.round(1500 * ratio), 1500);
 
-        let playHead = `${Math.round(playTime.currentTime /3600)} : ${Math.round(playTime.currentTime /60)} : ${Math.round(playTime.currentTime % 60)}`;
+        let single = (n) => {
+            return parseInt(n/10, 10) == 0;
+        }
+
+        let hhmmss = (timeSec) => {
+            let h = Math.round(timeSec/3600);
+            let m = Math.round(timeSec/60);
+            let s = Math.round(timeSec%60);
+    
+            if (single(h)) {
+                h = '0' + h;
+            }
+            if (single(m)){
+                m = '0'+ m;
+            } 
+            if (single(s)) {
+                s = '0'+ s;
+            }
+
+            return `${h} : ${m} : ${s}`;
+        }
 
         this.tag('PlayTime').patch({
             text: {
-                text: playHead,
-            }
-        })
-        let h = playTime.duration/3600;
-        let m = playTime.duration/60;
-        let s = playTime.duration % 60;
-        let hhmmss = `${Math.round(h)} : ${Math.round(m)} : ${Math.round(s)}`;
-        this.tag('PlayDuration').patch({
-            text: {
-                text: hhmmss,
+                text: hhmmss(playTime.currentTime),
             }
         })
 
+        this.tag('PlayDuration').patch({
+            text: {
+                text: hhmmss(playTime.duration),
+            }
+        })
+
+        let barW = Math.min(Math.round(1500 * ratio), 1500);
         this.tag('Bar').setSmooth('w', barW, {duration: 0.01});
     }
 
